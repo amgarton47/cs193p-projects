@@ -13,6 +13,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             Text("Sets found: \(viewModel.setsFound)")
+            
             ScrollView {
                 cards
             }
@@ -22,6 +23,8 @@ struct ContentView: View {
                     .disabled(viewModel.deck.count < 3)
                 Spacer()
                 Button("New Game") { viewModel.newGame() }
+                Spacer()
+                Button("Hint") {  }
             }.padding()
             
         }

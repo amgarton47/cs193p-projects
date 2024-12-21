@@ -12,12 +12,14 @@ struct SetGame {
     private(set) var displayedCards: [Card] = []
     private(set) var selectedCards: [Card] = []
     private(set) var isMatch = false
+    private(set) var allVisibleSets : [(Card, Card, Card)] = []
     
     init() {
         generateDeck()
         deck = deck.shuffled()
         displayedCards.append(contentsOf: deck[0..<12])
         deck.removeFirst(12)
+        getAllVisibleSets()
     }
     
     mutating func deal3Cards() {
@@ -29,6 +31,24 @@ struct SetGame {
         
         displayedCards.append(contentsOf: deck[0..<3])
         deck.removeFirst(3)
+        getAllVisibleSets()
+    }
+    
+    mutating func getAllVisibleSets() {
+        allVisibleSets.removeAll()
+        
+        for i in 0..<displayedCards.count {
+            for j in i+1..<displayedCards.count {
+                for k in j+1..<displayedCards.count {
+                    if isValidSet(displayedCards[i], displayedCards[j], displayedCards[k]) {
+                        let set = (displayedCards[i], displayedCards[j], displayedCards[k])
+                        allVisibleSets.append(set)
+                    }
+                }
+            }
+        }
+        
+        print(allVisibleSets)
     }
 
     
@@ -72,6 +92,7 @@ struct SetGame {
                 displayedCards.removeAll(where: {selectedCards.contains($0)})
                 selectedCards.removeAll()
                 isMatch = false
+                getAllVisibleSets()
             } else {
                 selectedCards.removeAll()
                 selectedCards.append(card)
