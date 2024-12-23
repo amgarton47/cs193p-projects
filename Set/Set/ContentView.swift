@@ -11,149 +11,160 @@ struct ContentView: View {
     @ObservedObject var viewModel: SetGameModelView
     
     var body: some View {
+        VStack (spacing: 5) {
+            header
+            cards
+            footer
+        }
+        .padding(.horizontal, 20.0)
+    }
+    
+    private var header: some View {
         VStack {
+            Text("Set!")
+                .font(.title)
             Text("Sets found: \(viewModel.setsFound)")
-            
-            ScrollView {
-                cards
-            }
-            
-            HStack {
-                Button("Deal 3 More Cards") { viewModel.deal3Cards() }
-                    .disabled(viewModel.deck.count < 3)
-                Spacer()
-                Button("New Game") { viewModel.newGame() }
-                Spacer()
-                Button("Hint") {  }
-            }.padding()
-            
+        }
+    }
+    
+    private var footer: some View {
+        HStack {
+            Button("Deal 3 More Cards") { viewModel.deal3Cards() }
+                .disabled(viewModel.deck.count < 3)
+            Spacer()
+            Button("New Game") { viewModel.newGame() }
+            Spacer()
+            Button("Hint") { viewModel.getHint() }
         }
         .padding()
     }
     
-    var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 75), spacing: 0)], spacing: 0) {
-            ForEach(viewModel.cards) { card in
-                CardView(card, viewModel: viewModel)
-                    .aspectRatio(2/3, contentMode: .fit)
-                    .padding(4)
-                    .onTapGesture { viewModel.choose(card) }
-            }
+    private var cards: some View {
+        AspectVGrid(viewModel.cards, aspectRatio: 63/80) { card in
+            CardView(card: card, viewModel: viewModel)
+                .background(.white)
+                .onTapGesture { viewModel.choose(card) }
+                .padding(5.0)
         }
     }
 }
 
 struct CardView: View {
-    @ObservedObject var viewModel: SetGameModelView
     let card: SetGame.Card
-    var color: Color
-    
-    init(_ card: SetGame.Card, viewModel: SetGameModelView) {
-        self.card = card
-        self.viewModel = viewModel
-        
-        switch card.color {
-        case .red:
-            color = Color(red: 220 / 255, green: 59 / 255, blue: 64 / 255)
-        case .green:
-            color = Color(red: 0.0, green: 159 / 255, blue: 96 / 255)
-        case .purple:
-            color = Color(red: 124 / 255, green: 53 / 255, blue: 129 / 255)
-        }
-    }
+    @ObservedObject var viewModel: SetGameModelView
     
     var body: some View {
         let isSelected = viewModel.selectedCards.contains(card)
-        let isASet = viewModel.isMatch && isSelected
-        let isNotASet = !viewModel.isMatch && isSelected && viewModel.selectedCards.count == 3
-        ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(isASet ? .green : .white)
-                .fill(isNotASet ? .red : .white)
-                .strokeBorder(lineWidth: 2)
-                .foregroundColor(isSelected ? .yellow : .black)
-                .opacity(isASet || isNotASet ? 0.2 : 1)
-            
-            switch card.symbol {
-                case .diamond:
-                    VStack {
-                        ForEach(0..<card.number, id: \.self) { _ in
-                            if card.shading == .striped {
-                                ZStack {
-                                    Stripes()
-                                        .stroke(lineWidth: 2)
-                                        .clipShape(Diamond())
-                                    Diamond().stroke(lineWidth: 4)
-                                }
-                            } else if card.shading == .filled {
-                                Diamond()
-                            } else if card.shading == .outlined {
-                                Diamond().stroke(lineWidth: 4)
-                            }
-                        }
-                        .frame(width: 60.0, height: 30.0)
-                    }
-                    .foregroundColor(color)
-                case .squiggle:
-                    VStack {
-                        ForEach(0..<card.number, id: \.self) { _ in
-                            if card.shading == .striped {
-                                ZStack {
-                                    Stripes()
-                                        .stroke(lineWidth: 2)
-                                        .clipShape(Squiggle())
-                                    Squiggle().stroke(lineWidth: 4)
-                                }
-                            } else if card.shading == .filled {
-                                Squiggle()
-                            } else if card.shading == .outlined {
-                                Squiggle().stroke(lineWidth: 4)
-                            }
-                        }
-                        .frame(width: 60.0, height: 30.0)
-                    }
-                    .foregroundColor(color)
-                case .oval:
-                    VStack {
-                        ForEach(0..<card.number, id: \.self) { _ in
-                            if card.shading == .striped {
-                                ZStack {
-                                    Stripes()
-                                        .stroke(lineWidth: 2)
-                                        .clipShape(Ellipse())
-                                    Ellipse().stroke(lineWidth: 4)
-                                }
-                            } else if card.shading == .filled {
-                                Ellipse()
-                            } else if card.shading == .outlined {
-                                Ellipse().stroke(lineWidth: 4)
-                            }
-                        }
-                        .frame(width: 60.0, height: 30.0)
-                    }
-                    .foregroundColor(color)
+        let cardContentPadding = 10.0
+        var borderColor: Color {
+            if isSelected {
+                if viewModel.isMatch {
+                    return Color.green
+                } else if viewModel.selectedCards.count == 3 {
+                    return Color.red
+                } else {
+                    return Color.blue
+                }
+            } else {
+                return Color.black
             }
-        }.scaleEffect(isSelected ? 0.95 : 1).animation(.easeIn(duration: 0.05), value: isSelected)
+        }
+        
+        ZStack {
+            CardContentView(card: card)
+                .padding(cardContentPadding)
+            RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(borderColor, lineWidth: isSelected ? 4 : 2)
+        }
+    }
+}
+
+struct CardContentView: View {
+    let card: SetGame.Card
+    var body: some View {
+        let spacingBetweenShapes: CGFloat = 10.0
+        let aspectRatio: CGFloat = 2/1
+        
+        GeometryReader { geometry in
+            let shapeHeight = min(
+                                (geometry.size.height - 2 * spacingBetweenShapes) / 3,
+                                geometry.size.width / aspectRatio)
+            let shapeWidth = shapeHeight * aspectRatio
+            VStack (spacing: spacingBetweenShapes) {
+                ForEach(0..<card.number, id: \.self) { _ in
+                    getSymbolView()
+                        .frame(width: shapeWidth, height: shapeHeight)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+    
+    @ViewBuilder
+    func getShadedSymbol(_ shape: some Shape) -> some View {
+        switch card.shading{
+        case .filled:
+            shape.fill()
+        case .outlined:
+            shape.stroke(lineWidth: 4)
+        case .striped:
+            ZStack {
+                Stripes()
+                    .stroke(lineWidth: 2)
+                    .clipShape(shape)
+                shape.stroke(lineWidth: 4)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func getColoredSymbol(_ shape: some View) -> some View {
+        var cardColor: Color {
+            switch card.color {
+            case .red:
+                Color(red: 220 / 255, green: 59 / 255, blue: 64 / 255)
+            case .green:
+                Color(red: 0.0, green: 159 / 255, blue: 96 / 255)
+            case .purple:
+                Color(red: 124 / 255, green: 53 / 255, blue: 129 / 255)
+            }
+        }
+        shape.foregroundColor(cardColor)
+    }
+    
+    func getStyledView(_ shape: some Shape) -> some View {
+        getColoredSymbol(getShadedSymbol(shape))
+    }
+    
+    @ViewBuilder
+    func getSymbolView() -> some View {
+        switch card.symbol {
+        case .diamond:
+            getStyledView(Diamond())
+        case .squiggle:
+            getStyledView(Squiggle())
+        case .oval:
+            getStyledView(Ellipse())
+        }
     }
 }
 
 struct Diamond: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        let center = CGPoint(x: rect.width / 2, y: rect.height / 2)
-
-        path.move(to: CGPoint(x: center.x, y: 0))
-        path.addLine(to: CGPoint(x: rect.width, y: center.y))
-        path.addLine(to: CGPoint(x: center.x, y: rect.height))
-        path.addLine(to: CGPoint(x: 0, y: center.y))
-        path.addLine(to: CGPoint(x: center.x, y: 0))
-
+        let startPoint = CGPoint(x: rect.midX, y: rect.minY)
+        
+        path.move(to: startPoint)
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
+        path.addLine(to: startPoint)
+        
         return path
-      }
+    }
 }
 
 struct Stripes: Shape {
-    
     func path(in rect: CGRect) -> Path {
         var path = Path()
         let width = rect.size.width

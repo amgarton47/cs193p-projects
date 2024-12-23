@@ -63,10 +63,10 @@ class EmojiMemoryGame: ObservableObject {
     private let themes: [Theme] = [
         Theme(name: "Halloween", color: .orange,  emojis: ["👻", "🎃", "🧙‍♀️", "💀", "🍭", "🕸️"], numPairs: 12),
         Theme(name: "Xmas",      color: .green,   emojis: ["🎅", "🎄", "🤶", "☃️", "⛸️", "🌨️", "⛷️", "🎁"], numPairs: 5),
-        Theme(name: "Fantasy",   color: .purple,  emojis: ["🧚", "🐉", "🧌", "🧝🏼‍♀️", "🧝‍♂️", "🧙‍♂️", "🧜‍♀️", "🧞‍♂️", "🏰"], numPairs: 7),
+        Theme(name: "Fantasy",   color: .purple,  emojis: ["🧚", "🐉", "🧌", "🧝🏼‍♀️", "🧝‍♂️", "🧙‍♂️", "🧜‍♀️", "🧞‍♂️", "🏰"], numPairs: 2),
         Theme(name: "Ally💕",    color: .pink,    emojis: ["🐣", "🍙", "🇯🇵", "🤸🏼‍♀️", "👩🏽‍❤️‍💋‍👨🏻", "🥰"], numPairs: 4),
         Theme(name: "Summer",    color: .blue,    emojis: ["☀️", "⛱️", "🌊", "🥵", "🏖️", "🏊", "🏃‍♂️", "🍦", "⛵️"], numPairs: 9),
-        Theme(name: "Food",      color: .brown,   emojis: ["🍔", "🌭", "🌮", "🍕", "🍣", "🍝", "🍎", "🥞", "🍳", "🍤", "🥟"], numPairs: 8)
+        Theme(name: "Food",      color: .brown,   emojis: ["🍔", "🌭", "🌮", "🍕", "🍣", "🍝", "🍎", "🥞", "🍳", "🍤", "🥟"], numPairs: 12)
     ]
     
     struct Theme {

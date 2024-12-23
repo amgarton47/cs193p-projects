@@ -34,14 +34,7 @@ class SetGameModelView: ObservableObject {
         27 - (deck.count + cards.count) / 3
     }
     
-    var hint: (SetGame.Card, SetGame.Card, SetGame.Card)? {
-        if setGame.allVisibleSets.count > 0 {
-            return setGame.allVisibleSets.first
-        }
-        return nil
-    }
-    
-    // intents
+    // MARK: - Intents
     func choose(_ card: SetGame.Card){
         setGame.choose(card)
     }
@@ -52,5 +45,9 @@ class SetGameModelView: ObservableObject {
     
     func newGame(){
         setGame = SetGame()
+    }
+    
+    func getHint() {
+        setGame.getHint()
     }
 }
