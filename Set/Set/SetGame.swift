@@ -40,6 +40,8 @@ struct SetGame {
                 displayedCards.append(contentsOf: deck[0..<3])
                 deck.removeFirst(3)
             }
+        } else if isMatch {
+            displayedCards.removeAll(where: { selectedCards.contains($0) })
         }
     }
     
@@ -66,6 +68,8 @@ struct SetGame {
                     for color in SetColor.allCases {
                         let id = "\(num) \(symbol) \(shading) \(color)"
                         deck.append(Card(color: color, symbol: symbol, shading: shading, number: num, id: id))
+                        
+                        if deck.count == 27 {return}
                     }
                 }
             }
