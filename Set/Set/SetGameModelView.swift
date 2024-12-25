@@ -8,7 +8,7 @@
 import SwiftUI
 
 class SetGameModelView: ObservableObject {
-    @Published private var setGame: SetGame
+    @Published private(set) var setGame: SetGame
     
     init() {
         setGame = SetGame()

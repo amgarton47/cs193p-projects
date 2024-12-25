@@ -49,7 +49,7 @@ struct ContentView: View {
     }
 }
 
-struct CardView: View {
+private struct CardView: View {
     let card: SetGame.Card
     @ObservedObject var viewModel: SetGameModelView
     
@@ -79,7 +79,7 @@ struct CardView: View {
     }
 }
 
-struct CardContentView: View {
+private struct CardContentView: View {
     let card: SetGame.Card
     var body: some View {
         let spacingBetweenShapes: CGFloat = 10.0
@@ -144,12 +144,12 @@ struct CardContentView: View {
         case .squiggle:
             getStyledView(Squiggle())
         case .oval:
-            getStyledView(Ellipse())
+            getStyledView(RoundedRectangle(cornerRadius: 33))
         }
     }
 }
 
-struct Diamond: Shape {
+private struct Diamond: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
         let startPoint = CGPoint(x: rect.midX, y: rect.minY)
@@ -164,7 +164,7 @@ struct Diamond: Shape {
     }
 }
 
-struct Stripes: Shape {
+private struct Stripes: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
         let width = rect.size.width
@@ -178,7 +178,7 @@ struct Stripes: Shape {
     }
 }
 
-struct Squiggle: Shape {
+private struct Squiggle: Shape {
     func path(in rect: CGRect) -> Path {
             var path = Path()
                     

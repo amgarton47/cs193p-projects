@@ -61,6 +61,7 @@ struct SetGame {
         } else {
             if isMatch {
                 deal3Cards()
+                selectedCards.removeAll()
             } else {
                 selectedCards.removeAll()
                 selectedCards.append(card)
