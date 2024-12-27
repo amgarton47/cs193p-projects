@@ -8,6 +8,7 @@
 import SwiftUI
 
 class EmojiMemoryGame: ObservableObject {
+    typealias Card = MemoryGame<String>.Card
     
     private static func createMemoryGame(theme: Theme) -> MemoryGame<String>{
         let consideredEmojis = theme.emojis.shuffled()
@@ -30,7 +31,7 @@ class EmojiMemoryGame: ObservableObject {
         model.shuffle()
     }
     
-    var cards: Array<MemoryGame<String>.Card> {
+    var cards: Array<Card> {
         model.cards
     }
     
@@ -48,7 +49,7 @@ class EmojiMemoryGame: ObservableObject {
         objectWillChange.send()
     }
     
-    func choose(_ card: MemoryGame<String>.Card){
+    func choose(_ card: Card){
         model.choose(card)
     }
     
@@ -66,7 +67,7 @@ class EmojiMemoryGame: ObservableObject {
         Theme(name: "Fantasy",   color: .purple,  emojis: ["🧚", "🐉", "🧌", "🧝🏼‍♀️", "🧝‍♂️", "🧙‍♂️", "🧜‍♀️", "🧞‍♂️", "🏰"], numPairs: 2),
         Theme(name: "Ally💕",    color: .pink,    emojis: ["🐣", "🍙", "🇯🇵", "🤸🏼‍♀️", "👩🏽‍❤️‍💋‍👨🏻", "🥰"], numPairs: 4),
         Theme(name: "Summer",    color: .blue,    emojis: ["☀️", "⛱️", "🌊", "🥵", "🏖️", "🏊", "🏃‍♂️", "🍦", "⛵️"], numPairs: 9),
-        Theme(name: "Food",      color: .brown,   emojis: ["🍔", "🌭", "🌮", "🍕", "🍣", "🍝", "🍎", "🥞", "🍳", "🍤", "🥟"], numPairs: 12)
+//        Theme(name: "Food",      color: .brown,   emojis: ["🍔", "🌭", "🌮", "🍕", "🍣", "🍝", "🍎", "🥞", "🍳", "🍤", "🥟", "🍔", "🌭", "🌮", "🍕", "🍣", "🍝", "🍎", "🥞", "🍳", "🍤", "🥟"], numPairs: 24)
     ]
     
     struct Theme {

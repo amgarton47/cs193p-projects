@@ -63,9 +63,9 @@ struct MemoryGame<CardContent> where CardContent: Equatable & Hashable {
     }
     
     struct Card: Equatable, Identifiable, CustomStringConvertible {
+        let content: CardContent
         var isFaceUp = false
         var isMatched = false
-        let content: CardContent
         
         var id: String
         var description: String {
