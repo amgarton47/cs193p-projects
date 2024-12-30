@@ -43,7 +43,9 @@ struct SetGameView: View {
         AspectVGrid(viewModel.cards, aspectRatio: Constants.Card.aspectRatio) { card in
             CardView(card: card, selectedCards: viewModel.selectedCards, isMatch: viewModel.isMatch)
                 .background(Color.white)
-                .onTapGesture { viewModel.choose(card) }
+                .onTapGesture {
+                    viewModel.choose(card)
+                }
                 .padding(Constants.Card.padding)
         }
     }
