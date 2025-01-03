@@ -43,11 +43,15 @@ class SetGameViewModel: ObservableObject {
         setGame.deal3Cards()
     }
     
-    func newGame(){
+    func newGame() {
         setGame = SetGame()
     }
     
     func getHint() {
         setGame.getHint()
+    }
+    
+    func shuffle() {
+        setGame.shuffle()
     }
 }

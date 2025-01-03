@@ -8,32 +8,53 @@
 import SwiftUI
 
 struct CardView: View {
-    let card: SetGame.Card
-    var selectedCards: [SetGame.Card]
+    typealias Card = SetGame.Card
+    
+    let card: Card
+    let selectedCards: [Card]
     var isMatch: Bool
+    let displayedCards: [Card]
+    let dealtCards: [Card]
+    let discardedCards: [Card]
     
     var body: some View {
-        let isSelected = selectedCards.contains(card)
-        let cardContentPadding = Constants.cardPadding
-        var borderColor: Color {
-            if isSelected {
-                if isMatch {
-                    return Color.green
-                } else if selectedCards.count == 3 {
-                    return Color.red
+        if displayedCards.contains(card) {
+            let isSelected = selectedCards.contains(card)
+            var borderColor: Color {
+                if isSelected {
+                    if isMatch {
+                        return Color.green
+                    } else if selectedCards.count == 3 {
+                        return Color.red
+                    } else {
+                        return Color.blue
+                    }
                 } else {
-                    return Color.blue
+                    return Color.black
                 }
-            } else {
-                return Color.black
             }
-        }
-        
-        ZStack {
-            CardContentView(card: card)
-                .padding(cardContentPadding)
+            
+            ZStack {
+                RoundedRectangle(cornerRadius: Constants.cornerRadius).fill(.white)
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .strokeBorder(borderColor, lineWidth: isSelected ? Constants.selectedBorderWidth : Constants.borderWidth)
+                CardContentView(card: card)
+                    .padding(Constants.cardPadding)
+            }
+            .rotationEffect(isMatch && selectedCards.contains(card) ? .degrees(180) : .degrees(0))
+            .blur(radius: !isMatch && selectedCards.contains(card) && selectedCards.count == 3 ? 1 : 0)
+        } else if discardedCards.contains(card) {
+            ZStack {
+                RoundedRectangle(cornerRadius: Constants.cornerRadius).fill(.white)
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .strokeBorder(.black, lineWidth: Constants.borderWidth)
+                CardContentView(card: card)
+                    .padding(Constants.cardPadding)
+            }
+        } else if !dealtCards.contains(card) {
             RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                .strokeBorder(borderColor, lineWidth: isSelected ? Constants.selectedBorderWidth : Constants.borderWidth)
+        } else {
+            Text("WTF")
         }
     }
     
@@ -47,5 +68,6 @@ struct CardView: View {
 
 #Preview {
     let card = SetGame.Card(color: .green, symbol: .squiggle, shading: .striped, number: 2, id: "testCard")
-    CardView(card: card, selectedCards: [card], isMatch: false)
+    CardView(card: card, selectedCards: [card], isMatch: false, displayedCards: [card], dealtCards: [], discardedCards: [])
+    CardView(card: card, selectedCards: [card], isMatch: false, displayedCards: [], dealtCards: [card], discardedCards: [card])
 }

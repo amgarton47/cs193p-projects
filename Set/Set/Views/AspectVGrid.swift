@@ -35,7 +35,17 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
                 atAspectRatio: aspectRatio
             )
             let columns = [GridItem(.adaptive(minimum: max(gridItemSize, minimumWidth)), spacing: 0)]
-            ScrollView {
+            
+            if max(gridItemSize, minimumWidth) == minimumWidth {
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 0) {
+                        ForEach(items) { item in
+                            content(item)
+                                .aspectRatio(aspectRatio, contentMode: .fit)
+                        }
+                    }
+                }
+            } else {
                 LazyVGrid(columns: columns, spacing: 0) {
                     ForEach(items) { item in
                         content(item)

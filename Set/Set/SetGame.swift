@@ -28,18 +28,11 @@ struct SetGame {
         if deck.count >= 3 {
             if isMatch {
                 isMatch = false
-                
-                for idx in displayedCards.indices {
-                    if selectedCards.contains(displayedCards[idx]) {
-                        displayedCards[idx] = deck[0]
-                        deck.removeFirst()
-                    }
-                }
+                displayedCards.removeAll(where: { selectedCards.contains($0) })
                 selectedCards.removeAll()
-            } else {
-                displayedCards.append(contentsOf: deck[0..<3])
-                deck.removeFirst(3)
             }
+            displayedCards.append(contentsOf: deck[0..<3])
+            deck.removeFirst(3)
         } else if isMatch {
             displayedCards.removeAll(where: { selectedCards.contains($0) })
         }
@@ -69,7 +62,7 @@ struct SetGame {
         }
     }
     
-    mutating func getHint(){
+    mutating func getHint() {
         getFirstVisibleSet()
         
         if let firstVisibleSet {
@@ -79,6 +72,10 @@ struct SetGame {
             selectedCards.append(firstVisibleSet.2)
             isMatch = true
         }
+    }
+    
+    mutating func shuffle() {
+        displayedCards = displayedCards.shuffled()
     }
     
     // returns weather or not a given three cards form a valid set
@@ -123,7 +120,7 @@ struct SetGame {
     }
     
     // Representation of a card from Set
-    struct Card: Identifiable, CustomStringConvertible, Equatable {
+    struct Card: Identifiable, CustomStringConvertible, Equatable, Hashable {
         let color: SetColor
         let symbol: Symbol
         let shading: Shading
